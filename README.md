@@ -34,7 +34,7 @@ that I would have to mock the `IntersectionObserver`. Given that I won't be main
 more of my time to the component itself.
 
 ## Limitations
-Here are some potential issues with my implementation:
+Here are some potential limitations with my implementation:
 - Issue 1
 - Issue 2
 - Issue 3

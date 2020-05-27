@@ -22,11 +22,11 @@ const LinksContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
-  height: 50%;
+  height: 60%;
   width: 100%;
 `;
 
-const StyledSectionLink = styled.a<{ active?: boolean }>`
+const SectionLink = styled.a<{ active?: boolean }>`
   background-color: ${BACKGROUND};
   opacity: ${(props) => (props.active ? 1.0 : 0.5)};
   height: 20px;
@@ -38,10 +38,6 @@ type IntersectionEntry = {
   isIntersecting: boolean;
   y: number;
   id: string;
-};
-
-const SectionLink = ({ item, active }: { item: string; active: boolean }) => {
-  return <StyledSectionLink role={"link"} active={active} href={`#${item}`} />;
 };
 
 const ScrollSpy = ({ items = [] }: { items?: string[] }) => {
@@ -98,7 +94,12 @@ const ScrollSpy = ({ items = [] }: { items?: string[] }) => {
     <Container>
       <LinksContainer>
         {map(items, (item, i) => (
-          <SectionLink key={i} active={activeId === item} item={item} />
+          <SectionLink
+            role={"link"}
+            href={`#${item}`}
+            key={i}
+            active={activeId === item}
+          />
         ))}
       </LinksContainer>
     </Container>
