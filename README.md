@@ -8,12 +8,10 @@ source code could be found in the `src/ScrollSpy` directory, with the App contai
 ## Design Decisions
 
 For inspiration on usage, I looked at https://www.npmjs.com/package/react-scrollspy as reference. This led to an API
-that requires the user to use `section` elements with ids in order to integrate the `ScrollSpy` component with the
-rest of the page. That allowed the `ScrollSpy` component to be a separate component that could be composed into the page
-instead of needing to wrap the page content.
+that requires the user to use ids in order to integrate the `ScrollSpy` component with the rest of the page. That allowed the `ScrollSpy` component to be a separate component that could be composed into the page instead of needing to wrap the page content.
 
 Using the reference guide on [Intersection Observers](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API),
-we set up observers on each of the ids as passed in by the `items` prop after the component's first render in a `useEffect` hook.
+we set up observers on each of the ids passed in by the `items` prop after the component's first render in a `useEffect` hook.
 This allows each instance of the of the component to have its own observer, which disconnects when the component unmounts. We
 maintain the currently intersecting entries in a `ref`, as we don't need to render based on this state. We use these values to
 calculate an `activeId`, which we do rerender based on and also set the hash based on this value. The hash is updated as a
@@ -70,4 +68,7 @@ Here are some potential limitations with my implementation:
 since our threshold is 0.2. In this situation, we just keep whatever the last active id was. In practice, this is less of a concern 
 since page sections shouldn't be so large, and if they are, the threshold could be adjusted accordingly. On that note, the current
 threshold is hardcoded somewhat arbitrarily. I could see it be dynamically calculated based on the size of the largest section.
-- The threshold 
+- As mentioned above, a large number of sections, particularly combined with a low threshold, could seriously degrade performance.
+- If the user passes in an invalid id, we simply `warn` to the console. It's unclear whether or not we'd want to hard fail in this
+case, at least during development.
+
