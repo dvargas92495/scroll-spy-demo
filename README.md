@@ -59,6 +59,8 @@ little tricky, since those elements won't be available on the initial render. I 
 There is also a `console.warn` in my implementation. In production, I'd like to use a logging library such that it would not log the
 warnings to the web console when the `NODE_ENV` is production.
 
+Finally, I would go back and convert the rest of the not `ScrollSpy` components to be typescript :D.
+
 ## Limitations
 
 Here are some potential limitations with my implementation:
