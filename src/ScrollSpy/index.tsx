@@ -68,7 +68,11 @@ const ScrollSpy = ({ items = [] }: { items?: string[] }) => {
         (item) => intersectionEntries.current[item].y
       );
       setActiveId(computedActiveId);
-      document.location.hash = `#${computedActiveId}`;
+
+      // setting window location hash directly non-deterministically has jarring scrolling behavior
+      // opted for `history`'s replace state. in 'production' would use react-router's history
+      // eslint-disable-next-line no-restricted-globals
+      history.replaceState({}, "", `#${computedActiveId}`);
     },
     [intersectionEntries, setActiveId, items]
   );
@@ -77,7 +81,6 @@ const ScrollSpy = ({ items = [] }: { items?: string[] }) => {
     const intersectionObserver = new IntersectionObserver(
       intersectionCallback,
       {
-        rootMargin: "0px",
         threshold: 0.2,
       }
     );

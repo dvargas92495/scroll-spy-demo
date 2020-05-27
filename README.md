@@ -13,13 +13,25 @@ rest of the page. That allowed the `ScrollSpy` component to be a separate compon
 instead of needing to wrap the page content.
 
 Using the reference guide on [Intersection Observers](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API),
-we set up observers on each of the ids as passed in by the `items` prop after the component's first render in a `useEffect` hook. 
+we set up observers on each of the ids as passed in by the `items` prop after the component's first render in a `useEffect` hook.
+This allows each instance of the of the component to have its own observer, which disconnects when the component unmounts. We
+maintain the currently intersecting entries in a `ref`, as we don't need to render based on this state. We use these values to 
+calculate an `activeId`, which we do rerender based on and also set the hash based on this value. The hash is updated as a 
+`replaceState` instead of a `pushState` so that we don't add to the browser history. Each id in the `items` prop
+is then rendered as a `link`, which automatically scrolls to the component with the given id on click. Each of these links
+renders a different background opacity based on whether or not it represents the active id.
 
 ## Performance Considerations
+The biggest performance consideration is the component's `intersectionCallback` method. Based on the documentation above, we
+want this function to be run as fast as possible due to it being executed on the main thread. 
 
 ## Aspirations
 What would I improve if I had more time to production-ize this? Well first, for production I probably would have just used the 
-`react-scrollspy` library above to get myself started. Given that this was a take home test, I opted for a more manual approach
+`react-scrollspy` library above to get myself started. Given that this was a take home test, I opted for a more manual approach.
+
+For production, I would also write more tests to cover the component's functionality. I started on this path, and then realized
+that I would have to mock the `IntersectionObserver`. Given that I won't be maintaining this component long term, I opted to focus
+more of my time to the component itself.
 
 ## Limitations
 Here are some potential issues with my implementation:
