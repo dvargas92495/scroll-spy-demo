@@ -3,7 +3,7 @@
 A react project showcasing the `ScrollSpy` component. The demo is reachable at https://scroll-spy-demo.netlify.app/
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app). The core implementation
-source code could be found in the `src/ScrollSpy` directory, with the App container in `src/App.tsx`.
+source code could be found in the `src/ScrollSpy` directory, with the App container in `src/App.js`.
 
 ## Design Decisions
 
