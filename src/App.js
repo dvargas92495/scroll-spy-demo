@@ -9,6 +9,8 @@ const BigSection = styled.section`
   width: 100%;
   height: 1000px;
   text-align: center;
+  border: 5px solid black;
+  box-sizing: border-box;
 `;
 
 function App() {
@@ -16,9 +18,15 @@ function App() {
     <div className="App">
       <ScrollSpy items={sections} />
       <div>
-        <BigSection id={sections[0]}>section 1</BigSection>
-        <BigSection id={sections[1]}>section 2</BigSection>
-        <BigSection id={sections[2]}>section 3</BigSection>
+        <BigSection id={sections[0]} background={"red"}>
+          section 1
+        </BigSection>
+        <BigSection id={sections[1]} background={"blue"}>
+          section 2
+        </BigSection>
+        <BigSection id={sections[2]} background={"green"}>
+          section 3
+        </BigSection>
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import styled from "styled-components";
-import { map } from "lodash";
+import { map, filter, minBy } from "lodash";
 
 // Background-color stolen from withprimer.com
 const BACKGROUND = "#7267e6";
@@ -26,7 +26,7 @@ const LinksContainer = styled.div`
   width: 100%;
 `;
 
-const SectionLink = styled.a<{ active?: boolean }>`
+const StyledSectionLink = styled.a<{ active?: boolean }>`
   background-color: ${BACKGROUND};
   opacity: ${(props) => (props.active ? 1.0 : 0.5)};
   height: 20px;
@@ -34,13 +34,68 @@ const SectionLink = styled.a<{ active?: boolean }>`
   border-radius: 10px;
 `;
 
+type IntersectionEntry = {
+  isIntersecting: boolean;
+  y: number;
+  id: string;
+};
+
+const SectionLink = ({ item, active }: { item: string; active: boolean }) => {
+  return <StyledSectionLink role={"link"} active={active} href={`#${item}`} />;
+};
+
 const ScrollSpy = ({ items = [] }: { items?: string[] }) => {
-  const [activeId, setActiveId] = useState(items[0]);
+  const [activeId, setActiveId] = useState<string>();
+  const intersectionEntries = useRef<{
+    [id: string]: IntersectionEntry;
+  }>({});
+  const intersectionCallback = useCallback(
+    (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((e) => {
+        const id = e.target.id;
+        intersectionEntries.current[id] = {
+          isIntersecting: e.isIntersecting,
+          y: e.boundingClientRect.y,
+          id,
+        };
+      });
+      const visibleItems = filter(
+        items,
+        (i) => intersectionEntries.current[i]?.isIntersecting
+      );
+      const computedActiveId = minBy(
+        visibleItems,
+        (item) => intersectionEntries.current[item].y
+      );
+      setActiveId(computedActiveId);
+      document.location.hash = `#${computedActiveId}`;
+    },
+    [intersectionEntries, setActiveId, items]
+  );
+
+  useEffect(() => {
+    const intersectionObserver = new IntersectionObserver(
+      intersectionCallback,
+      {
+        rootMargin: "0px",
+        threshold: 0.2,
+      }
+    );
+    items.forEach((id) => {
+      const element = document.getElementById(id);
+      if (element) {
+        intersectionObserver.observe(element);
+      } else {
+        console.warn(`Invalid id passed to scroll spy: ${element}`);
+      }
+    });
+    return () => intersectionObserver.disconnect();
+  }, [intersectionCallback, items]);
   return (
     <Container>
       <LinksContainer>
         {map(items, (item, i) => (
-          <SectionLink role={"link"} key={i} active={activeId === item} />
+          <SectionLink key={i} active={activeId === item} item={item} />
         ))}
       </LinksContainer>
     </Container>
